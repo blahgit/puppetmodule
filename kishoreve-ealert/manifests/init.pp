@@ -75,18 +75,22 @@ exec { 'flask':
 exec { 'clone elasticalert':
     command => "git clone https://github.com/blahgit/elasticalert.git",
     path    => '/usr/bin/',
+    cwd => "$home_path",
             }->
+      exec { 'install setup':
+               command => "python ${base_path}/elastalert/setup.py install",
+               path    => '/usr/bin/',
+               #timeout => 0,
+               cwd => "$base_path/elastalert",
+                 }->
 
     exec { 'install reqs':
       command => "pip install -r ${base_path}/elastalert/requirements.txt",
       path    => '/usr/bin/',
+      cwd => "$base_path/elastalert",
         }->
 
- exec { 'install setup':
-    command => "python ${base_path}/elastalert/setup.py install",
-    path    => '/usr/bin/',
-    #timeout => 0,
-      }->
+
 
    file { "${base_path}/elastalert/config.yaml":
           ensure => 'present',
