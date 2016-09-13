@@ -64,33 +64,29 @@ exec {'upgrade pip':
  command => 'pip install --upgrade pip',
  path => '/usr/bin',
 }->
-
-exec { 'flask':
-    command => "pip install flask",
-    path    => '/usr/bin/',
-      }->
 exec { 'setup_tools_update':
     command => 'pip install -U setuptools',
     path    => '/usr/bin/',
       }->
-
+exec { 'flask':
+    command => "pip install flask",
+    path    => '/usr/bin/',
+      }->
 exec { 'clone elasticalert':
     command => "git clone https://github.com/blahgit/elasticalert.git",
     path    => '/usr/bin/',
-
             }->
+
+    exec { 'install reqs':
+      command => "pip install -r ${base_path}/elastalert/requirements.txt",
+      path    => '/usr/bin/',
+        }->
 
  exec { 'install setup':
     command => "python ${base_path}/elastalert/setup.py install",
     path    => '/usr/bin/',
-timeout => 0,
+    #timeout => 0,
       }->
-
-
-exec { 'install reqs':
-    command => "pip install -r ${base_path}/elastalert/requirements.txt",
-    path    => '/usr/bin/',
-        }->
 
    file { "${base_path}/elastalert/config.yaml":
           ensure => 'present',
