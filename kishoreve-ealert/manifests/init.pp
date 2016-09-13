@@ -68,6 +68,11 @@ exec { 'setup_tools_update':
     command => 'pip install -U setuptools',
     path    => '/usr/bin/',
       }->
+
+      exec { 'utils update':
+          command => 'pip install -U utils',
+          path    => '/usr/bin/',
+            }->
 exec { 'flask':
     command => "pip install flask",
     path    => '/usr/bin/',
@@ -77,20 +82,19 @@ exec { 'clone elasticalert':
     path    => '/usr/bin/',
     cwd => "$home_path",
             }->
+
+            exec { 'install reqs':
+              command => "pip install -r ${base_path}/elastalert/requirements.txt",
+              path    => '/usr/bin/',
+              cwd => "$base_path/elastalert",
+                }->
+
       exec { 'install setup':
                command => "python ${base_path}/elastalert/setup.py install",
                path    => '/usr/bin/',
                #timeout => 0,
                cwd => "$base_path/elastalert",
                  }->
-
-    exec { 'install reqs':
-      command => "pip install -r ${base_path}/elastalert/requirements.txt",
-      path    => '/usr/bin/',
-      cwd => "$base_path/elastalert",
-        }->
-
-
 
    file { "${base_path}/elastalert/config.yaml":
           ensure => 'present',
