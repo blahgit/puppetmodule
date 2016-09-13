@@ -47,6 +47,8 @@
 ##     }->
 #
 
+#Tested successfully on RHEL 6.6 x86-64, python 2.6.6 (on a cloudstack instance running puppet 3.3.1) 09/2016
+
 class ealert {
 $home_path='/opt'
 $base_path="${home_path}/elasticalert"
